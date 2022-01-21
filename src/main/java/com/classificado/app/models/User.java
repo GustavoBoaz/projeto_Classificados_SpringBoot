@@ -32,6 +32,14 @@ public class User {
 	private String name;
 	private @NotBlank @Email String email;
 	private String password;
+
+	/**
+	 * @author Bruno
+	 * @since 21/01/2022
+	 * 
+	 * <p> Essa idade é do tipo Long
+	 * </p>
+	 */
 	private Long idade;
 	
 	public Long getIdUser() {
