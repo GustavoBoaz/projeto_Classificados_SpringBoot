@@ -44,6 +44,15 @@ public class User {
 	@JsonIgnoreProperties("criador")
 	private List<Anuncio> meusAnuncios = new ArrayList<>();
 
+	/**
+	 * @author Bruno
+	 * @since 21/01/2022
+	 * 
+	 * <p> Essa idade é do tipo Long
+	 * </p>
+	 */
+	private Long idade;
+	
 	public Long getIdUser() {
 		return idUser;
 	}
