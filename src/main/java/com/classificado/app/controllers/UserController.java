@@ -18,18 +18,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.classificado.app.models.User;
+import com.classificado.app.dtos.UserCredentialsDTO;
+import com.classificado.app.dtos.UserLoginDTO;
+import com.classificado.app.models.UserModel;
 import com.classificado.app.repositories.UserRepository;
+import com.classificado.app.services.UserServices;
 
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
 	
 	private @Autowired UserRepository repository;
+	private @Autowired UserServices services;
 	
 	@GetMapping("/all")
-	public ResponseEntity<List<User>> findAllUsers(){
-		List<User> list = repository.findAll();
+	public ResponseEntity<List<UserModel>> findAll(){
+		List<UserModel> list = repository.findAll();
 		
 		if (list.isEmpty()) {
 			return ResponseEntity.status(204).build();
@@ -40,7 +44,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/{id_user}")
-	public ResponseEntity<User> findByIdUser(@PathVariable(value = "id_user") Long idUser) {
+	public ResponseEntity<UserModel> findById(@PathVariable(value = "id_user") Long idUser) {
 		return repository.findById(idUser)
 				.map(resp -> ResponseEntity.status(200).body(resp))
 				.orElseGet(() -> {
@@ -49,12 +53,17 @@ public class UserController {
 	}
 	
 	@PostMapping("/save")
-	public ResponseEntity<User> saveUser(@Valid @RequestBody User newUser) {
-		return ResponseEntity.status(201).body(repository.save(newUser));
+	public ResponseEntity<UserModel> save(@Valid @RequestBody UserModel newUser) {
+		return services.registerNewUser(newUser);
+	}
+	
+	@PutMapping("/auth")
+	public ResponseEntity<UserCredentialsDTO> getCredentials(@Valid @RequestBody UserLoginDTO dto){
+		return services.credentials(dto);
 	}
 	
 	@PutMapping("/update")
-	public ResponseEntity<User> updateUser(@Valid @RequestBody User user){
+	public ResponseEntity<UserModel> update(@Valid @RequestBody UserModel user){
 		return repository.findById(user.getIdUser())
 				.map(resp -> ResponseEntity.status(200).body(repository.save(user)))
 				.orElseGet(() -> {
@@ -63,9 +72,9 @@ public class UserController {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	@DeleteMapping("/{id_user}")
-	public ResponseEntity deleteUser(@PathVariable(value = "id_user") Long idUser) {
-		Optional<User> optional = repository.findById(idUser);
+	@DeleteMapping("/{id}")
+	public ResponseEntity delete(@PathVariable(value = "id") Long idUser) {
+		Optional<UserModel> optional = repository.findById(idUser);
 		
 		if (optional.isPresent()) {
 			repository.deleteById(idUser);
