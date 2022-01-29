@@ -19,6 +19,17 @@
 	</properties>
 	<dependencies>
 
+		<!-- Security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+
 		<!-- Web enviroment -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
